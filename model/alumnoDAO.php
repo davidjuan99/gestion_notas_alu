@@ -18,20 +18,14 @@ class AlumnoDao{
 		foreach ($lista_alumno as $alumno) {
 			$id=$alumno["id_alumno"]." ";
 			echo "<a href='modificar_alumno.php?id={$id}'>Modificar</a>"." ";
-			echo "<a href='eliminar_alumno.php?id={$id}'>Eliminar</a>"." ";
-			echo $id;
+			echo "<a href='./admin.page.php?id_alumno={$id}'>Eliminar</a>"." ";
+		/*	echo $id;*/
 		//$enviar=$enviar."'>Modificar</a>";
 			echo "{$alumno['nombre_alumno']} , ";
 			echo "{$alumno['apellido1_alumno']} , ";
-			echo "{$alumno['apellido2_alumno']} , ";
-			echo "{$alumno['grupo_alumno']} , ";
-			echo "{$alumno['email_alumno']} , ";
-			echo "{$alumno['passwd_alumno']}<br>";
+			echo "{$alumno['apellido2_alumno']}<br>";
     }
    }
-    //public function filtro(){
-
-    //}
     public function insertar(){
     	try {
     		include '../model/connection.php';
@@ -54,9 +48,70 @@ class AlumnoDao{
 			$pdo->rollback();
 			echo $ex->getMessage();
 		}
+	}
+
+	public function borrar(){
+		include './model/connection.php';
+
+		try {
+			$pdo->beginTransaction();
+			$id=$_GET['id_alumno'];
+			//echo $id;
+
+			// Miramos si en la tabla notas hay algunba nota con la id del alumno escogido.
+			$query = "SELECT * FROM `tbl_nota` WHERE `id_alumno` = ?";
+			$sentencia=$pdo->prepare($query);
+			$sentencia->bindParam(1,$id);
+			$sentencia->execute();
+			$lista_notas=$sentencia->fetchAll(PDO::FETCH_ASSOC);
+			// Si no hay ninguna nota solo eliminamos el alumno, de lo contrario eliminaremos también eliminaremos.
+			if ($lista_notas!="") {
+				$query="DELETE FROM `tbl_alumno` WHERE `id_alumno` = ?";
+				$sentencia=$pdo->prepare($query);
+				$sentencia->bindParam(1,$id);
+				$sentencia->execute();
+			} else {
+				$query="DELETE FROM `tbl_nota` WHERE `id_alumno` = ?";
+				$sentencia=$pdo->prepare($query);
+				$sentencia->bindParam(1,$id);
+				$sentencia->execute();
+
+				$query="DELETE FROM `tbl_nota` WHERE `id_alumno` = ?";
+				$sentencia=$pdo->prepare($query);
+				$sentencia->bindParam(1,$id);
+				$sentencia->execute();
+			}
+
+		$pdo->commit();
+		header("Location: ./admin.page.php");
+
+	} catch (Exception $e) {
+		$pdo->rollBack();
+		echo $e;
+	}
+	}
+	public function filtros(){
+		include './model/connection.php';
+    	$sql1="SELECT * FROM tbl_alumno WHERE nombre_alumno = '{$_POST['nombre_alumno']}' OR apellido1_alumno = '{$_POST['apellido1_alumno']}'";
+		$sentencia=$pdo->prepare($sql1);
+		$sentencia->execute();
+
+		$lista_alumno=$sentencia->fetchAll(PDO::FETCH_ASSOC);
+
+		foreach ($lista_alumno as $alumno) {
+			$id=$alumno["id_alumno"]." ";
+			echo "<a href='modificar_alumno.php?id={$id}'>Modificar</a>"." ";
+			echo "<a href='./admin.page.php?id_alumno={$id}'>Eliminar</a>"." ";
+		/*	echo $id;*/
+		//$enviar=$enviar."'>Modificar</a>";
+			echo "{$alumno['nombre_alumno']} , ";
+			echo "{$alumno['apellido1_alumno']} , ";
+			echo "{$alumno['apellido2_alumno']}<br>";
+    	}
+   	}
 
 
     }
 
-	}  
+	  
 	  
