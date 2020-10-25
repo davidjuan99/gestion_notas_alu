@@ -58,7 +58,7 @@ class AlumnoDao{
 			$id=$_GET['id_alumno'];
 			//echo $id;
 
-			// Miramos si en la tabla notas hay algunba nota con la id del alumno escogido.
+			// Miramos si en la tabla notas hay alguna nota con la id del alumno escogido.
 			$query = "SELECT * FROM `tbl_nota` WHERE `id_alumno` = ?";
 			$sentencia=$pdo->prepare($query);
 			$sentencia->bindParam(1,$id);
@@ -92,7 +92,7 @@ class AlumnoDao{
 	}
 	public function filtros(){
 		include './model/connection.php';
-    	$sql1="SELECT * FROM tbl_alumno WHERE nombre_alumno = '{$_POST['nombre_alumno']}' OR apellido1_alumno = '{$_POST['apellido1_alumno']}'";
+    	$sql1="SELECT * FROM tbl_alumno WHERE nombre_alumno LIKE '%{$_POST['nombre_alumno']}%' AND apellido1_alumno LIKE '%{$_POST['apellido1_alumno']}%'";
 		$sentencia=$pdo->prepare($sql1);
 		$sentencia->execute();
 
