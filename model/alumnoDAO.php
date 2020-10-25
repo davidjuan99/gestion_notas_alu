@@ -76,7 +76,7 @@ class AlumnoDao{
 				$sentencia->bindParam(1,$id);
 				$sentencia->execute();
 
-				$query="DELETE FROM `tbl_nota` WHERE `id_alumno` = ?";
+				$query="DELETE FROM `tbl_alumno` WHERE `id_alumno` = ?";
 				$sentencia=$pdo->prepare($query);
 				$sentencia->bindParam(1,$id);
 				$sentencia->execute();
