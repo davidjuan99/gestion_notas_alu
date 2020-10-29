@@ -1,5 +1,5 @@
 <?php
-    class Admin {
+    class Nota {
         //Atributos, siempre en privado
         private $id_nota;
         private $nombre_materia;
@@ -11,7 +11,7 @@
             $this->id_nota=$id_nota;
             $this->nombre_materia=$nombre_materia;
             $this->nota=$nota;
-        
+        }
     /**
      * @return mixed
      */

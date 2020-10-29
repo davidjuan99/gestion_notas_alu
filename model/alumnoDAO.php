@@ -17,7 +17,7 @@ class AlumnoDao{
 
 		foreach ($lista_alumno as $alumno) {
 			$id=$alumno["id_alumno"]." ";
-			echo "<a href='modificar_alumno.php?id={$id}'>Modificar</a>"." ";
+			echo "<a href='./model/actualizar.php?id_alumno={$id}'>Modificar</a>"." ";
 			echo "<a href='./admin.page.php?id_alumno={$id}'>Eliminar</a>"." ";
 		/*	echo $id;*/
 		//$enviar=$enviar."'>Modificar</a>";
@@ -109,6 +109,15 @@ class AlumnoDao{
 			echo "{$alumno['apellido2_alumno']}<br>";
     	}
    	}
+   		public function lecturamodi($id){
+   		include '../model/connection.php';
+        $query = "SELECT * FROM tbl_alumno WHERE id_alumno=?";
+        $sentencia=$pdo->prepare($query);
+        $sentencia->bindParam(1,$id);
+        $sentencia->execute();
+        $alumno=$sentencia->fetch(PDO::FETCH_ASSOC);
+        return $alumno;
+    }
 
 
     }
