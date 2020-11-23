@@ -29,6 +29,7 @@ class AlumnoDao{
     public function insertar(){
     	try {
     		include '../model/connection.php';
+    		$pdo->beginTransaction();
 			$stmt=$pdo->prepare("INSERT INTO tbl_alumno (`id_alumno`,`nombre_alumno`,`apellido1_alumno`,`apellido2_alumno`, `grupo_alumno`, `email_alumno`, `passwd_alumno`) VALUES (NULL, ?, ?, ?, ?, ?, ?);")	;
 			$nombre=$_POST['nombre_alumno'];
 			$apellido1=$_POST['apellido1_alumno'];
@@ -43,6 +44,22 @@ class AlumnoDao{
 			$stmt->bindParam(5,$email);
 			$stmt->bindParam(6,$passwd);
 			$stmt->execute();
+				$id_alumno=$pdo->lastInsertId();
+				$query2="INSERT INTO tbl_nota (nombre_materia,id_alumno,nota) VALUES ('Fisica',?,0)";
+                $result2=$pdo->prepare($query2);
+                $result2->bindParam(1,$id_alumno);
+                $result2->execute();
+
+                $query="INSERT INTO tbl_nota (nombre_materia,id_alumno,nota) VALUES ('Mates',?,0)";
+                $result=$pdo->prepare($query);
+                $result->bindParam(1,$id_alumno);
+                $result->execute();
+
+                $query3="INSERT INTO tbl_nota (nombre_materia,id_alumno,nota) VALUES ('Programacion',?,0)";
+                $result3=$pdo->prepare($query3);
+                $result3->bindParam(1,$id_alumno);
+                $result3->execute();
+            $pdo->commit();
 			header("Location:../admin.page.php");
 		} catch (Exception $ex){
 			$pdo->rollback();
